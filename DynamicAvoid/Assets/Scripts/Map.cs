@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Pathfinding.Boids;
 
 public class Constans
 {
@@ -57,12 +58,38 @@ public class MapGrid
     }
 }
 
+
+public class UnitManager
+{
+    public List<Boid> Boids = new List<Boid>();
+    public List<Unit> Units = new List<Unit>();
+
+
+    public void CreateUnit(Map map, Transform unitContainer)
+    {
+        var u = new Unit(map, unitContainer, this);
+        this.Units.Add(u);
+        Boids.Add(u.boid);
+    }
+
+    public void Clear()
+    {
+        Units.Clear();
+        Boids.Clear();
+    }
+
+}
+
 public class Unit
 {
+    public Boid boid { get; set; }
+
     private Image _img;
     private Map _map;
-    public Unit(Map map, Transform parent)
+    private UnitManager _mgr;
+    public Unit(Map map, Transform parent, UnitManager mgr)
     {
+
         var obj = new GameObject();
         obj.transform.SetParent(parent);
         var img = obj.AddComponent<Image>();
@@ -72,25 +99,45 @@ public class Unit
         img.rectTransform.pivot = new Vector2(0, 0);
         img.rectTransform.localScale = Vector2.one;
         img.raycastTarget = false;
-        img.rectTransform.anchoredPosition = new Vector2(Random.Range(10,50), Random.Range(10, 50));
+        boid = new Boid(
+                new Vector3(Random.Range(10, 50), 0, Random.Range(10, 50))
+            );
         _img = img;
         _map = map;
+        _mgr = mgr;
+        displace();
     }
 
     public void Move(float deltaTime)
     {
-        var pos = _img.rectTransform.anchoredPosition;
-        var c = Mathf.Clamp(Mathf.FloorToInt(pos.x / Constans.GRID_WIDTH), 0, Constans.MAX_COL_CNT - 1); 
-        var r = Mathf.Clamp(Mathf.FloorToInt(pos.y / Constans.GRID_HEIGHT), 0, Constans.MAX_COL_CNT - 1);
-        var dir = _map.GetFlowDir(r, c);
-        _img.rectTransform.anchoredPosition = pos + dir * 50 * deltaTime;
+        updateVec();
+        boid.flockForce(_mgr.Boids);
+        displace(deltaTime);
+    }
+
+
+    void updateVec()
+    {
+        var c = Mathf.Clamp(Mathf.FloorToInt(boid.Loc.x / Constans.GRID_WIDTH), 0, Constans.MAX_COL_CNT - 1);
+        var r = Mathf.Clamp(Mathf.FloorToInt(boid.Loc.z / Constans.GRID_HEIGHT), 0, Constans.MAX_COL_CNT - 1);
+        var d = _map.GetFlowDir(r, c);
+        boid.Vel = new Vector3(d.x, 0, d.y);
+    }
+
+
+    void displace(float deltaTime=0.0f)
+    {
+        boid.Update(deltaTime);
+        _img.rectTransform.anchoredPosition = new Vector2(boid.Loc.x, boid.Loc.z);
     }
 }
 
 public class Map : MonoBehaviour
 {
+    public Vector2 Target { get; set; }
+
     private MapGrid[,] allGrids = new MapGrid[50, 50];
-    private ArrayList allUnits = new ArrayList();
+    private UnitManager unitMgr = new UnitManager();
 
     public Transform gridBgParent;
     public Transform textBgParent;
@@ -129,7 +176,7 @@ public class Map : MonoBehaviour
     {
         if (!moving)
             return;
-        foreach(Unit unit in allUnits)
+        foreach(Unit unit in unitMgr.Units)
         {
             unit.Move(Time.fixedDeltaTime);
         }
@@ -137,9 +184,9 @@ public class Map : MonoBehaviour
 
     void CreateUnits()
     {
-        for(var i =0; i < 50; i++)
+        for(var i =0; i < 10; i++)
         {
-            allUnits.Add(new Unit(this, unitContainer));
+            unitMgr.CreateUnit(this, unitContainer);
         }
     }
     void CreateMap()
@@ -169,9 +216,13 @@ public class Map : MonoBehaviour
                 var trigger = obj.AddComponent<EventTrigger>();
                 EventTrigger.Entry entry = new EventTrigger.Entry();
                 entry.eventID = EventTriggerType.PointerClick;
+                int curX = r;
+                int curY = c;
+
                 entry.callback.AddListener((eventData) => {
                     //this.OnPointerClick(eventData) 
                     calculateHeatField(i / Constans.MAX_COL_CNT, i % Constans.MAX_COL_CNT);
+                    Target = new Vector2(curX, curY);
                 });
                 trigger.triggers.Add(entry);
 
