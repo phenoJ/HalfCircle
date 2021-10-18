@@ -50,15 +50,22 @@ namespace Pathfinding.Visual
 
 
             int i = Grid.X + Grid.Y;
-            if (i % 2 == 0)
+            if (Grid.IsBlock)
             {
-                img.color = colors[0];
+                img.color = colors[2];
             }
             else
             {
-                img.color = colors[1];
+                if (i % 2 == 0)
+                {
+                    img.color = colors[0];
+                }
+                else
+                {
+                    img.color = colors[1];
+                }
             }
-
+            
             createText();
             createArrow();
         }
@@ -115,7 +122,7 @@ namespace Pathfinding.Visual
             arrowTextObj.transform.SetParent(Obj.transform);
             arrowTextObj.name = "arrow";
             arrowText = arrowTextObj.AddComponent<Text>();
-            arrowText.text = "===>";
+            arrowText.text = "=>";
             arrowText.raycastTarget = false;
             arrowText.rectTransform.sizeDelta = new Vector2(Constans.GRID_WIDTH, Constans.GRID_HEIGHT);
             arrowText.rectTransform.anchorMin = new Vector2(0, 0);
