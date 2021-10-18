@@ -6,7 +6,7 @@ namespace Pathfinding.Boids
 {
     public class Predator : Boid
     {
-        public Predator(Vector3 loc):base(loc)
+        public Predator(Vector3 loc, FlowDir.Unit u) :base(loc, u)
         {
 
         }

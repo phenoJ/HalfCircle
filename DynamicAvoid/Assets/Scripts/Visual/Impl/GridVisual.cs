@@ -12,7 +12,8 @@ namespace Pathfinding.Visual
 
         static Color[] colors = new Color[] {
             new Color(190f / 255f, 190f/ 255f, 190f/ 255f, 1),
-            new Color(100f / 255f, 100f/ 255f, 100f/ 255f, 1)
+            new Color(100f / 255f, 100f/ 255f, 100f/ 255f, 1),
+            Color.black
         };
 
         public FlowDir.MapGrid Grid { get; set; }
@@ -43,7 +44,7 @@ namespace Pathfinding.Visual
             entry.callback.AddListener((eventData) => {
                 //this.OnPointerClick(eventData) 
                 Grid.Map.CalculateHeatField(Grid.X, Grid.Y);
-                Grid.Map.Target = new Vector2(Grid.X, Grid.Y);
+                Grid.Map.UpdateTarget(new Vector2(Grid.X, Grid.Y));
                 mapVisual.RefreshTarget();
             });
             trigger.triggers.Add(entry);

@@ -14,6 +14,10 @@ namespace Pathfinding.Boids
         static int ALLIGN_RADIUS = 1;
         static int MAX_FORCE = 1;
 
+        public void SetPos2(Vector2 pos)
+        {
+            loc = new Vector3(pos.x, 0, pos.y);
+        }
 
         protected Vector3 loc;
         public Vector3 Loc { get { return loc; } set { loc = value; } }
@@ -21,12 +25,16 @@ namespace Pathfinding.Boids
         public Vector3 Vel { get { return vel; } set { vel = value; } }
         protected Vector3 acc;
 
+        FlowDir.Unit unit;
+        public FlowDir.Unit Unit { get { return unit; } }
+
         protected int mass;
         protected int maxForce = MAX_FORCE;
         protected float speed = 50f;
 
-        public Boid(Vector3 loc)
+        public Boid(Vector3 loc, FlowDir.Unit u)
         {
+            unit = u;
             this.loc = loc;
             vel = Vector3.zero;
             acc = Vector3.zero;

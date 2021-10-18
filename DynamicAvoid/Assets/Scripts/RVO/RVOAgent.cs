@@ -65,6 +65,11 @@ namespace Pathfinding.RVO
 			Radius = 5f;
 			MaxNeighbours = 10;
 
+			StartMove(pos);
+		}
+
+		public void StartMove(Vector2 pos)
+		{
 			position = pos;
 			Position = position;
 			prevSmoothPos = position;

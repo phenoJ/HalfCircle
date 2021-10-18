@@ -22,6 +22,12 @@ namespace Pathfinding.FlowDir
         public bool Interpolation { get { return interpolation; } set { interpolation = value; } }
 
 
+        public void UpdateTarget(Vector2 tar)
+        {
+            Target = tar;
+            unitMgr.SetBoidsTarget(new Vector2(Constans.GRID_WIDTH * (Target.y), Constans.GRID_HEIGHT * (Target.x)));
+        }
+
         public Vector2 Target { get; set; }
         public int Row { get; private set; }
         public int Column { get; private set; }
@@ -171,6 +177,8 @@ namespace Pathfinding.FlowDir
             {
                 unitMgr.CreateUnit(this, i < 5 ? 1 : 2);
             }
+
+            unitMgr.UpdateBoidsGroupCenter();
         }
 
 
@@ -330,7 +338,14 @@ namespace Pathfinding.FlowDir
                     dir.x = (left != null ? left.cost : centerGrid.cost) - (right != null ? right.cost : centerGrid.cost);
                     dir.y = (top != null ? top.cost : centerGrid.cost) - (bottom != null ? bottom.cost : centerGrid.cost);
                     dir = dir.normalized;
+                    /*
+                    var dx = dir.x;
+                    var dy = dir.y;
+                    dir.x = - dy;
+                    dir.y = dx;
+                    */
                     dir.y = -dir.y;
+                    //dir.x = -dir.x;
                     centerGrid.dir = dir;
                 }
             }

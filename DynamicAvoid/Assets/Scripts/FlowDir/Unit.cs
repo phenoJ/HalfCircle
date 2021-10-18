@@ -54,41 +54,122 @@ namespace Pathfinding.FlowDir
             var posY = Random.Range(10, 50) + (group - 1) * 200;
 
             boid = new Boid(
-                    new Vector3(posX, 0, posY)
+                    new Vector3(posX, 0, posY), this
                 );
             _mgr = mgr;
             _agent = new RVO.Agent(this, map, Pos2);
         }
 
+        /// <summary>
+        /// 当前计算的运动速度
+        /// </summary>
+        Vector2 curVelocity;
+
+        void applyBoid(float deltaTime)
+        {
+            var posOld = Pos2;
+
+            boid.Vel = new Vector3(curVelocity.x, 0, curVelocity.y);
+            
+            boid.flockForce(_mgr.GetBoidsByGroup(Group));
+            boid.Update(deltaTime);
+            var posNew = Pos2;
+            boid.SetPos2(posOld);
+
+            curVelocity = (posNew - posOld) / deltaTime;
+        }
+
         public void Move(float deltaTime)
         {
+
+            if (targetOffset.magnitude <= 10)
+            {
+                return;
+            }
+
+            curVelocity = Vector2.zero;
 
             var c = Mathf.Clamp(
                 Mathf.FloorToInt(boid.Loc.x / Constans.GRID_WIDTH), 0, _map.Column - 1);
             var r = Mathf.Clamp(
                 Mathf.FloorToInt(boid.Loc.z / Constans.GRID_HEIGHT), 0, _map.Row - 1);
             var d = _map.GetFlowDir(r, c);
-
-            var velocity = _agent.Velocity == Vector2.zero ?
+            curVelocity = _agent.Velocity == Vector2.zero ?
                 d : d * _agent.Velocity;
 
-            boid.Vel = new Vector3(velocity.x, 0, velocity.y);
-            var posOld = Pos2;
+            updateTargetVelocity();
 
-            boid.flockForce(_mgr.GetBoidsByGroup(Group));
-            boid.Update(deltaTime);
-            
-            var posNew = Pos2;
-            velocity = (posNew - posOld) / deltaTime;
+            if(targetOffset.magnitude > 30)
+            {
+                applyBoid(deltaTime);
+            }
 
-            _agent.DesiredVelocity = velocity;
+            _agent.DesiredVelocity = curVelocity;
         }
-
-
 
         public void SynAgentPos()
         {
+            if (targetOffset.magnitude <= 10)
+            {
+                return;
+            }
+
             boid.Loc = new Vector3(_agent.InterpolatedPosition.x, 0, _agent.InterpolatedPosition.y);
+
+        }
+
+
+        Vector2 _offsetCenter = Vector2.zero;
+
+        public void UpdateCenterPos(Vector2 center)
+        {
+            _offsetCenter = Pos2 - center;
+        }
+
+
+        Vector2 _targetPos = Vector2.zero;
+        float _startDistance = 0f;
+        public void UpdateTargetPos(Vector2 center)
+        {
+            //TODO: 考虑碰撞偏移
+            _targetPos = center + _offsetCenter;
+            _startDistance = targetOffset.magnitude;
+
+            _agent.StartMove(Pos2);
+        }
+
+
+        void updateTargetVelocity()
+        {
+            if(_targetPos == Vector2.zero)
+            {
+                return;
+            }
+
+            var d = targetOffset.magnitude;
+            if(_startDistance > 0)
+            {
+                if(d < _startDistance)
+                {
+                    var r = d / _startDistance;
+                    var n = -targetOffset.normalized;
+                    curVelocity = (n * (1 - r) + curVelocity.normalized * r) * curVelocity.magnitude;
+                }
+                
+            }
+            else
+            {
+                curVelocity = Vector2.zero;
+            }
+        }
+
+
+        Vector2 targetOffset
+        {
+            get
+            {
+                return Pos2 - _targetPos;
+            }
         }
     }
 }

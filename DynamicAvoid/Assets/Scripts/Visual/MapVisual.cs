@@ -135,6 +135,11 @@ namespace Pathfinding.Visual
                 v.FixedUpdate();
             }
 
+            
+        }
+
+        public void UpdateTargetText()
+        {
             TargetText.text = textMapTarget;
         }
 
@@ -157,6 +162,8 @@ namespace Pathfinding.Visual
                     gridsVisual[r, c].UpdateDebug();
                 }
             }
+
+            UpdateTargetText();
         }
 
 
