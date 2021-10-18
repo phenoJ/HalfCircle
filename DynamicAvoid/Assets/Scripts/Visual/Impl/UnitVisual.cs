@@ -11,6 +11,14 @@ namespace Pathfinding.Visual
 
         Image img;
 
+        public void SetSprite(Sprite spr)
+        {
+            if (img)
+            {
+                img.sprite = spr;
+            }
+        }
+
         public override void Create()
         {
             base.Create();
@@ -25,6 +33,12 @@ namespace Pathfinding.Visual
             img.rectTransform.pivot = new Vector2(0, 0);
             img.rectTransform.localScale = Vector2.one;
             img.raycastTarget = false;
+
+            img.color = Color.red;
+            if(Unit.id == 1)
+            {
+                img.color = Color.blue;
+            }
 
             updateVisualPos();
         }

@@ -13,11 +13,25 @@ namespace Pathfinding.Visual
         public Transform unitContainer;
         public Font font;
 
+        public Sprite unitSprite;
         FlowDir.Map map;
         private bool moving = false;
         GridVisual[,] gridsVisual = null;
         List<UnitVisual> unitsVisual = new List<UnitVisual>();
         public Text TargetText;
+
+
+        private bool interpolation = true;
+        public bool Interpolation { get { return interpolation; } set { interpolation = value; } }
+        private float deltaTime;
+        public float DeltaTime { get { return deltaTime; } }
+        private float desiredDeltaTime = 0.05f;
+        public float DesiredDeltaTime
+        {
+            get { return desiredDeltaTime; }
+            set { desiredDeltaTime = System.Math.Max(value, 0.0f); }
+        }
+
 
         private void Start()
         {
@@ -33,15 +47,35 @@ namespace Pathfinding.Visual
             if (Input.GetKeyDown("h"))
             {
                 textBgParent.gameObject.SetActive(!textBgParent.gameObject.activeSelf);
+                foreach (var g in gridsVisual)
+                {
+                    g.switchText(textBgParent.gameObject.activeSelf);
+                }
+                
             }
             if (Input.GetKeyDown("d"))
             {
                 arrowBgParent.gameObject.SetActive(!arrowBgParent.gameObject.activeSelf);
+                foreach (var g in gridsVisual)
+                {
+                    g.switchArrow(arrowBgParent.gameObject.activeSelf);
+                }
             }
 
             if (Input.GetKeyDown("s"))
             {
                 moving = !moving;
+                if (moving)
+                {
+                    map.Interpolation = interpolation;
+                    map.DesiredDeltaTime = DesiredDeltaTime;
+                    map.DeltaTime = DeltaTime;
+                }
+            }
+
+            if (moving)
+            {
+                map.Update();
             }
         }
 
@@ -73,6 +107,7 @@ namespace Pathfinding.Visual
                     v.Parent = gridBgParent;
                     v.Grid = g;
                     v.font = font;
+                    v.mapVisual = this;
                     v.Create();
                     gridsVisual[r, c] = v;
                 }
@@ -85,6 +120,10 @@ namespace Pathfinding.Visual
                 v.Unit = u;
                 
                 v.Create();
+                if(unitSprite != null)
+                {
+                    v.SetSprite(unitSprite);
+                }
                 unitsVisual.Add(v);
             }
         }
@@ -128,6 +167,8 @@ namespace Pathfinding.Visual
                 }
             }
         }
+
+
     }
 
 }

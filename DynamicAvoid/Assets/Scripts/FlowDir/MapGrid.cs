@@ -27,16 +27,18 @@ namespace Pathfinding.FlowDir
 
         private Vector2 _dir = Vector2.zero;
         public Vector2 dir { get { return _dir; } set { _dir = value; } }
+        private bool _block = false;
+        public bool IsBlock { get { return _block; } }
 
-
-        public MapGrid(int r, int c, Map map)
+        public MapGrid(int r, int c, Map map, bool isBlock = false)
         {
             Map = map;
             this.r = r;
             this.c = c;
-            _idx = r * map.Row + c;
+            _idx = r * map.Column + c;
             _posX = c * Constans.GRID_WIDTH;
             _posY = r * Constans.GRID_HEIGHT;
+            _block = isBlock;
         }
     }
 

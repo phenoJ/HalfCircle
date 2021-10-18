@@ -95,7 +95,7 @@ namespace Pathfinding.Visual
             text.rectTransform.anchoredPosition = new Vector2(0, 0);
             text.resizeTextForBestFit = true;
 
-            //textObj.SetActive(false);
+            textObj.SetActive(false);
         }
 
 
@@ -127,7 +127,7 @@ namespace Pathfinding.Visual
             arrowText.alignment = TextAnchor.MiddleCenter;
             arrowText.resizeTextForBestFit = true;
 
-            //arrowTextObj.SetActive(false);
+            arrowTextObj.SetActive(false);
         }
 
 
@@ -150,6 +150,16 @@ namespace Pathfinding.Visual
             }
         }
 
+
+        public void switchArrow(bool enable)
+        {
+            arrowTextObj.SetActive(enable);
+        }
+
+        public void switchText(bool enable)
+        {
+            textObj.SetActive(enable);
+        }
 
         public void UpdateDebug()
         {

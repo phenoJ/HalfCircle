@@ -16,7 +16,7 @@ namespace Pathfinding.Boids
 
 
         protected Vector3 loc;
-        public Vector3 Loc { get { return loc; } }
+        public Vector3 Loc { get { return loc; } set { loc = value; } }
         protected Vector3 vel;
         public Vector3 Vel { get { return vel; } set { vel = value; } }
         protected Vector3 acc;
