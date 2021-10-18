@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 namespace Pathfinding.Visual
 {
+
     public class MapVisual : MonoBehaviour
     {
         public Transform gridBgParent;
@@ -15,7 +16,6 @@ namespace Pathfinding.Visual
 
         public Sprite unitSprite;
         FlowDir.Map map;
-        private bool moving = false;
         GridVisual[,] gridsVisual = null;
         List<UnitVisual> unitsVisual = new List<UnitVisual>();
         public Text TargetText;
@@ -31,13 +31,20 @@ namespace Pathfinding.Visual
             get { return desiredDeltaTime; }
             set { desiredDeltaTime = System.Math.Max(value, 0.0f); }
         }
-
+        private static Color[] s_colors = new Color[] {
+            new Color(190f / 255f, 190f/ 255f, 190f/ 255f, 1),
+            new Color(100f / 255f, 100f/ 255f, 100f/ 255f, 1),
+            new Color(255f / 255f, 0f/ 255f, 0f/ 255f, 1)
+        };
 
         private void Start()
         {
             map = new FlowDir.Map(40, 30);
             map.Init();
 
+            map.Interpolation = interpolation;
+            map.DesiredDeltaTime = DesiredDeltaTime;
+            map.DeltaTime = DeltaTime;
             createVisual();
         }
 
@@ -62,28 +69,12 @@ namespace Pathfinding.Visual
                 }
             }
 
-            if (Input.GetKeyDown("s"))
-            {
-                moving = !moving;
-                if (moving)
-                {
-                    map.Interpolation = interpolation;
-                    map.DesiredDeltaTime = DesiredDeltaTime;
-                    map.DeltaTime = DeltaTime;
-                }
-            }
-
-            if (moving)
-            {
-                map.Update();
-            }
+            map.Update();
         }
 
 
         private void FixedUpdate()
         {
-            if (!moving)
-                return;
             foreach (var unit in map.UnitMgr.Units)
             {
                 unit.Move(Time.fixedDeltaTime);

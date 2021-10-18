@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &31670475
 RectTransform:
   m_ObjectHideFlags: 0
@@ -570,7 +570,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 608973132}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa54543a58082c846b974217ad1b29f0, type: 3}
   m_Name: 
@@ -580,7 +580,7 @@ MonoBehaviour:
   arrowBgParent: {fileID: 31670475}
   unitContainer: {fileID: 1677163602}
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-  unitSpr: {fileID: 0}
+  unitSpr: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &608973138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -588,7 +588,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 608973132}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d2fee104ab1d5e640a25124b12c47723, type: 3}
   m_Name: 

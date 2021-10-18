@@ -178,11 +178,18 @@ namespace Pathfinding.FlowDir
         {
             allGrids = new MapGrid[Row, Column];
 
-            for(int r = 0; r < Row; r++)
+            HashSet<int> block = new HashSet<int>();
+            for (int i = 0; i < 5; i++)
+            {
+                block.Add(20 + (i + 5) * Constans.MAX_COL_CNT);
+            }
+
+            for (int r = 0; r < Row; r++)
             {
                 for (int c = 0; c < Column; c++)
                 {
-                    allGrids[r, c] = new MapGrid(r, c, this);
+                    int i = r * Constans.MAX_COL_CNT + c;
+                    allGrids[r, c] = new MapGrid(r, c, this, block.Contains(i));
                 }
             }
         }
