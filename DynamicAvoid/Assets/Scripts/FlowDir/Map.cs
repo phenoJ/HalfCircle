@@ -169,7 +169,7 @@ namespace Pathfinding.FlowDir
         {
             for (var i = 0; i < 10; i++)
             {
-                unitMgr.CreateUnit(this);
+                unitMgr.CreateUnit(this, i < 5 ? 1 : 2);
             }
         }
 

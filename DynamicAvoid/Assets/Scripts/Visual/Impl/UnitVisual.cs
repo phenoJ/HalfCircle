@@ -35,6 +35,11 @@ namespace Pathfinding.Visual
             img.raycastTarget = false;
 
             img.color = Color.red;
+            if(Unit.Group == 2)
+            {
+                img.color = Color.yellow;
+            }
+
             if(Unit.id == 1)
             {
                 img.color = Color.blue;

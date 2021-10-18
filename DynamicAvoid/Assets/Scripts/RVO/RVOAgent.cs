@@ -49,11 +49,17 @@ namespace Pathfinding.RVO
 		public List<float> neighbourDists = new List<float>();
 
 
-		public Agent(int id, FlowDir.Map map, Vector2 pos)
+		public Agent(FlowDir.Unit unit, FlowDir.Map map, Vector2 pos)
 		{
 			_id = id;
 			_map = map;
-			maxSpeed = _id == 1 ? 25 : 20;
+
+			maxSpeed = unit.Group == 1 ? 20 : 100;
+			if(unit.id == 1)
+            {
+				maxSpeed = 25;
+			}
+
 			agentTimeHorizon = 2;
 			neighbourDist = 30;
 			Radius = 5f;
