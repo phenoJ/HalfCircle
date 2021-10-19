@@ -7,7 +7,7 @@ namespace Pathfinding.FlowDir
 {
     public class Map : ObjBase
     {
-        public RVO.Agent.VO[] vos = new RVO.Agent.VO[20];
+        //public RVO.Agent.VO[] vos = new RVO.Agent.VO[20];
         private float lastStep = -99999;
         private float lastStepInterpolationReference = -9999;
         private float prevDeltaTime = 0;
@@ -173,9 +173,9 @@ namespace Pathfinding.FlowDir
 
         void createUnits()
         {
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 100; i++)
             {
-                unitMgr.CreateUnit(this, i < 5 ? 1 : 2);
+                unitMgr.CreateUnit(this, i < 50 ? 1 : 2);
             }
 
             unitMgr.UpdateBoidsGroupCenter();

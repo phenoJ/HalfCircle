@@ -364,8 +364,8 @@ namespace Pathfinding.RVO
 
 		internal void CalculateVelocity()
 		{
-			var vos = _map.vos;
-			var voCount = 0;
+			//var vos = _map.vos;
+			List<RVO.Agent.VO> vos = new List<RVO.Agent.VO>();
 
 			float inverseAgentTimeHorizon = 1.0f / agentTimeHorizon;
 
@@ -378,19 +378,22 @@ namespace Pathfinding.RVO
 				Vector2 relativeVelocity = velocity - other.Velocity;
 				Vector2 voAverage = (velocity + other.Velocity) * 0.5f;
 
-				vos[voCount] = new VO(voBoundingOrigin, voAverage, totalRadius, relativeVelocity, inverseAgentTimeHorizon, 1);
-				voCount++;
+				vos.Add(
+					new VO(voBoundingOrigin, voAverage, totalRadius, relativeVelocity, inverseAgentTimeHorizon, 1)
+					);
+				//vos[voCount] = new VO(voBoundingOrigin, voAverage, totalRadius, relativeVelocity, inverseAgentTimeHorizon, 1);
+				//voCount++;
 			}
 
 			Vector2 result = Vector2.zero;
 			float best = float.PositiveInfinity;
 			float qualityCutoff = 0.05f;
 			float cutoff = velocity.magnitude * qualityCutoff;
-			result = Trace(vos, voCount, new Vector2(desiredVelocity.x, desiredVelocity.y), cutoff, out best);
+			result = Trace(vos, new Vector2(desiredVelocity.x, desiredVelocity.y), cutoff, out best);
 
 			Vector2 p = Velocity;
 			float score;
-			Vector2 res = Trace(vos, voCount, p, cutoff, out score);
+			Vector2 res = Trace(vos, p, cutoff, out score);
 
 			if (score < best)
 			{
@@ -411,7 +414,7 @@ namespace Pathfinding.RVO
 			* Returns the position which gives the minimum score (approximately).
 			*/
 		//Trace(vos, voCount, new Vector2(desiredVelocity.x, desiredVelocity.z), cutoff, out best );
-		Vector2 Trace(VO[] vos, int voCount, Vector2 p, float cutoff, out float score)
+		Vector2 Trace(List<VO> vos, Vector2 p, float cutoff, out float score)
 		{
 
 			float stepScale = 1.5f;
@@ -425,7 +428,7 @@ namespace Pathfinding.RVO
 
 				Vector2 dir = Vector2.zero;
 				float mx = 0;
-				for (int i = 0; i < voCount; i++)
+				for (int i = 0; i < vos.Count; i++)
 				{
 					float w;
 					Vector2 d = vos[i].Sample(p, out w);

@@ -50,8 +50,20 @@ namespace Pathfinding.FlowDir
             _id = s_idGen++;
             _map = map;
 
-            var posX = Random.Range(10, 50) + (group - 1) * 200;
-            var posY = Random.Range(10, 50) + (group - 1) * 200;
+            var posX = 0;
+            var posY = 0;
+
+            if(group != 2)
+            {
+                posX = Random.Range(10, 50) + (group - 1) * 200;
+                posY = Random.Range(10, 50) + (group - 1) * 200;
+            }
+            else
+            {
+                posX = 25 * (id % 10 ) + (group - 1) * 200;
+                posY = 25 * (int)(id / 10) + (group - 1) * 200;
+            }
+            
 
             boid = new Boid(
                     new Vector3(posX, 0, posY), this
@@ -82,7 +94,7 @@ namespace Pathfinding.FlowDir
         public void Move(float deltaTime)
         {
 
-            if (targetOffset.magnitude <= 10)
+            if (targetOffset.magnitude <= 3)
             {
                 return;
             }
@@ -109,8 +121,9 @@ namespace Pathfinding.FlowDir
 
         public void SynAgentPos()
         {
-            if (targetOffset.magnitude <= 10)
+            if (targetOffset.magnitude <= 3)
             {
+                //boid.Loc = new Vector3(_agent.InterpolatedPosition.x, 0, _agent.InterpolatedPosition.y);
                 return;
             }
 
