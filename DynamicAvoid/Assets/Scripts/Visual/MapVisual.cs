@@ -39,7 +39,7 @@ namespace Pathfinding.Visual
 
         private void Start()
         {
-            map = new FlowDir.Map(40, 30);
+            map = new FlowDir.Map(40, 50);
             map.Init();
 
             map.Interpolation = interpolation;
